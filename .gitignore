@@ -1,0 +1,12 @@
+.DS_Store
+# R metadata and workspace
+.Rhistory
+.RData
+.Ruserdata
+
+# Stan/C++ compiled binaries
+*.o
+*.so
+
+# Ignore the specific compiled binary in the Stan-R folder
+Stan-R/dte
