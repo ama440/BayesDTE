@@ -16,9 +16,11 @@ data are first generated using BayesDTE. BayesDTE is then fit on the generated d
 the model fit is visualized by overlaying the posterior means of the survival curves on 
 top of the Kaplan-Meier curves.
 
-Finally, the folder `Data` contains the coordinates used to extract the individual 
-patient data from the published Kaplan-Meier curves of the CASPIAN trial 
-(Paz-Ares et al., [2019](https://www.thelancet.com/article/S0140-6736(19)32222-6/fulltext), [2022](https://www.esmoopen.com/article/S2059-7029(22)00029-1/fulltext)), 
-as well as the R code to turn those coordinates into individual patient data. 
-The CASPIAN trial was a phase III small cell lung cancer clinical trial that 
+<!---
+Finally, the folder `Data` contains the coordinates used to extract the individual
+patient data from the published Kaplan-Meier curves of the CASPIAN trial
+(Paz-Ares et al., [2019](https://www.thelancet.com/article/S0140-6736(19)32222-6/fulltext), [2022](https://www.esmoopen.com/article/S2059-7029(22)00029-1/fulltext)),
+as well as the R code to turn those coordinates into individual patient data.
+The CASPIAN trial was a phase III small cell lung cancer clinical trial that
 exhibited a delayed treatment effect.
+-->
