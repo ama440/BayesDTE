@@ -8,9 +8,10 @@ library(survminer)
 library(posterior)
 library(survRM2)
 library(nph)
+library(patchwork)
 
 # Source Stan model and R wrappers
-source("Stan-R/dte_wrappers.R")
+source("Stan-R/dte_wrappers_pp.R")
 
 # Source RMST R functions
 source("Stan-R/rmst_funs.R")
@@ -101,9 +102,12 @@ initf <- function() list(log_coef = log(c(0.063397835, 0.007338422, 0.289976930,
                          # epsilon = 2,
                          beta_trt = 0)
 
-# Fit BayesDTE
+# Fit BayesDTE with epsilon fixed at 2 and Uniform(0,12) prior on tau
 fit.dte <- bayes_dte.mcmc(gendata$time, gendata$event, ifelse(gendata$group == "Treatment", 1, 0),
-                          knots.fit, n_nodes = 10, epsilon_val = 2, tau_max = 12, rho = 0.5, sd_beta = 10, t_upper = 36,
+                          knots = knots.fit, n_nodes = 20, 
+                          epsilon_val = 2, 
+                          prior_tau = "uniform", tau_max = 12, 
+                          rho = 0.5, sd_beta = 10, t_upper = 36,
                           chains = 4, parallel_chains = 4,
                           iter_warmup = 2000, iter_sampling = 2500,
                           refresh = 25, init = initf)
@@ -114,7 +118,8 @@ summary.dte <- summary(as_draws_df(fit.dte),
                        mean, sd, ~quantile(.x, probs = c(0.025, 0.975)), rhat, ess_bulk, ess_tail) 
 
 summary.dte %>% 
-  filter(variable %in% c("hr_post", "tau", "rmst_ctrl_val", "rmst_trt_val", "rmst_diff"))
+  filter(variable %in% c("hr_post", "tau", "rmst_ctrl_val", "rmst_trt_val", "rmst_diff")) %>% 
+  mutate(truth = c(tau, rmst_ctrl, rmst_trt, rmst_diff, hr_post))
 
 
 # Visualize fitted curves; requires Rstan
@@ -163,7 +168,7 @@ fitted$survival[which(fitted$group == "Treatment")] <- exp(-cum_haz_trt)
 fit_gendata <- survfit(Surv(time, event) ~ group, data = gendata)
 mysurvplot <- ggsurvplot(
   fit_gendata, 
-  conf.int = FALSE,
+  conf.int = TRUE,
   ggtheme = theme_classic(), 
   data = gendata,
   legend.labs = c("Control", "Treatment"),
@@ -206,12 +211,3 @@ mysurvplot$plot <- mysurvplot$plot +
 pdf("Example/fitted_plot.pdf", height = scale*4, width = scale*7)
 mysurvplot$plot / mysurvplot$table + plot_layout(heights = c(8,2))
 dev.off()
-
-
-
-
-
-
-
-
-
