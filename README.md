@@ -39,11 +39,6 @@ that you use these files for fitting BayesDTE.
 - `generate_data.R`: `generate_data` simulates survival times from the BayesDTE model.
 - `RMST_Cox.R`: RMST difference from a Cox model, with bootstrap intervals, for comparison.
 
-There is an additional folder called `Stan-R/RStan` containing the file 
-`dte_funs_for_rstan.stan`, which includes functions that work with Rstan. 
-They are slightly different because Rstan handles arrays differently than cmdstanr. 
-The purpose of this file is solely to extract the functions into R to visualize the model fit.
-
 We have also implemented the power prior within BayesDTE to allow for the incorporation
 of historical data, although this development was not discussed in the paper and
 has not yet been studied. If no historical data are provided in the function

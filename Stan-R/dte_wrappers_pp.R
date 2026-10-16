@@ -1,5 +1,4 @@
 library(cmdstanr)
-library(rstan)
 library(posterior)
 library(statmod)
 library(splines2)
@@ -29,7 +28,7 @@ source("Stan-R/rmst_funs.R")
 #' @param mixture_weight numeric: probability weight for the point mass spike at 0 (used if prior_tau == "mixture")
 #' @param sigma_tau numeric: standard deviation for half-normal prior (used if prior_tau == "half-normal")
 #'
-#' @return a list giving data to be passed onto `rstan` or `cmdstanr` models.
+#' @return a list giving data to be passed onto the `cmdstanr` model.
 get.standata.dte <- function(
     t, delta, z, 
     t_hist = numeric(0), delta_hist = numeric(0), z_hist = numeric(0), 
