@@ -35,7 +35,7 @@ get.standata.dte <- function(
     t_hist = numeric(0), delta_hist = numeric(0), z_hist = numeric(0), 
     knots, n_nodes, 
     tau_val = numeric(0), tau_max = numeric(0), epsilon_val = numeric(0), 
-    sd_epsilon = 10, rho = 0, sd_beta = 10, 
+    sd_epsilon = 10, rho = 0, sd_beta = 10, sd_beta_trt = 10,
     t_upper, a0 = 0,
     prior_tau = c("uniform", "mixture", "half-normal"), 
     mixture_weight = 0.5, sigma_tau = 1.0) {
@@ -51,7 +51,7 @@ get.standata.dte <- function(
   
   n <- length(t)
   df <- length(knots) + 4
-  t_max <- max(t)
+  t_max <- max(c(t, t_hist, t_upper))
   bdry_knots <- c(0, t_max)
   
   # Compute Gaussian quadrature
@@ -160,6 +160,7 @@ get.standata.dte <- function(
     , 'sd_epsilon' = sd_epsilon
     , 'rho'     = rho
     , 'sd_beta' = sd_beta
+    , 'sd_beta_trt' = sd_beta_trt
     , 'limit_tau' = ifelse(length(tau_max) == 1, 1, 0)
     , 'tau_max' = as.array(tau_max)
     , 'prior_tau' = prior_tau_int      # Passing the mapped integer to Stan
@@ -220,7 +221,7 @@ bayes_dte.mcmc <- function(
     t_hist = numeric(0), delta_hist = numeric(0), z_hist = numeric(0), 
     knots, n_nodes, 
     tau_val = numeric(0), tau_max = numeric(0), epsilon_val = numeric(0), 
-    sd_epsilon = 10, rho = 0, sd_beta = 10, 
+    sd_epsilon = 10, rho = 0, sd_beta = 10, sd_beta_trt = 10,
     t_upper, a0 = 0, 
     prior_tau = c("uniform", "mixture", "half-normal"), 
     mixture_weight = 0.5, sigma_tau = 1.0, ...) {
@@ -229,7 +230,7 @@ bayes_dte.mcmc <- function(
   standata <- get.standata.dte(t, delta, z, t_hist, delta_hist, z_hist, 
                                knots, n_nodes, 
                                tau_val, tau_max, epsilon_val, 
-                               sd_epsilon, rho, sd_beta, 
+                               sd_epsilon, rho, sd_beta, sd_beta_trt,
                                t_upper, a0,
                                prior_tau, mixture_weight, sigma_tau)
   

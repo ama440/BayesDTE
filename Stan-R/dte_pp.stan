@@ -40,6 +40,7 @@ data {
   real<lower=0>                   sd_epsilon;      // standard deviation for epsilons's normal prior distribution
   real<lower=0>                   rho;             // correlation for AR(1) structure in baseline cum_haz coefficients
   real<lower=0>                   sd_beta;         // prior sd for baseline cum_haz coefficients
+  real<lower=0>                   sd_beta_trt;     // prior sd for treatment effect coefficient
   
   // --- tau ---
   int<lower=0,upper=1>            limit_tau;       // indicator for whether to use alternative uniform prior for tau
@@ -143,7 +144,7 @@ model {
   log_coef ~ multi_normal_cholesky(mu0, L_Sigma);
   
   // Noninformative prior on treatment effect
-  beta_trt ~ normal(0, 10);
+  beta_trt ~ normal(0, sd_beta_trt);
   
   // Set prior for tau depending on chosen option
   if (!fix_tau) {
