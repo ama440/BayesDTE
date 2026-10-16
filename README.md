@@ -23,7 +23,7 @@ restricted mean survival time (RMST) up to a chosen time `t_upper`.
 
 ![Hazard ratio and survival curves under a delayed treatment effect](figures/delayed_effect.png)
 
-*Hazard ratio and true survival curves with $\tau = 4$, $\epsilon = 2$, and a post-delay hazard 
+*Hazard ratio and true survival curves with τ = 4, ε = 2, and a post-delay hazard 
 ratio of 0.7. The grey region is the transition window.*
 
 ## Files
