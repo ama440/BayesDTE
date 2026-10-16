@@ -11,6 +11,27 @@ library(nph)
 library(patchwork)
 library(ggtext)
 
+# Set the working directory to the top level of the repository (the folder above
+# Example/), so the relative paths below work wherever the repository is cloned
+this_file <- function() {
+  # Run with Rscript Example/dte_example.R
+  arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(arg) > 0) return(gsub("~+~", " ", sub("^--file=", "", arg[1]), fixed = TRUE))  # Rscript writes spaces as ~+~
+  # Run with source("Example/dte_example.R") or the Source button in RStudio
+  for (i in rev(seq_len(sys.nframe()))) {
+    f <- sys.frame(i)$ofile
+    if (!is.null(f)) return(f)
+  }
+  # Run line by line in RStudio
+  if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
+    f <- rstudioapi::getSourceEditorContext()$path
+    if (nzchar(f)) return(f)
+  }
+  stop("Could not find the location of dte_example.R; ",
+       "set the working directory to the top level of the repository.")
+}
+setwd(dirname(dirname(normalizePath(this_file()))))
+
 # Source Stan model and R wrappers
 source("Stan-R/dte_wrappers_pp.R")
 
