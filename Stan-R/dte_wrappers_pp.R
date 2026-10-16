@@ -3,11 +3,44 @@ library(posterior)
 library(statmod)
 library(splines2)
 
+# Folder containing this file (Stan-R), so the files below are found wherever the
+# repository is cloned and whatever the working directory is
+stan_r_dir <- local({
+  dir <- NULL
+  # Sourced with source(), including the Source button in RStudio
+  for (i in rev(seq_len(sys.nframe()))) {
+    f <- sys.frame(i)$ofile
+    if (!is.null(f) && basename(f) == "dte_wrappers_pp.R") {
+      dir <- dirname(normalizePath(f))
+      break
+    }
+  }
+  # Run line by line in RStudio
+  if (is.null(dir) && requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
+    f <- rstudioapi::getSourceEditorContext()$path
+    if (basename(f) == "dte_wrappers_pp.R") dir <- dirname(normalizePath(f))
+  }
+  # Otherwise, the working directory is the top level of the repository or Stan-R itself
+  if (is.null(dir)) {
+    for (d in c(file.path(getwd(), "Stan-R"), getwd())) {
+      if (file.exists(file.path(d, "dte_pp.stan"))) {
+        dir <- d
+        break
+      }
+    }
+  }
+  if (is.null(dir)) {
+    stop("Could not find the Stan-R folder; source this file with ",
+         "source(\"path/to/BayesDTE/Stan-R/dte_wrappers_pp.R\").")
+  }
+  dir
+})
+
 # Load cmdstan model
-bayes.dte <- cmdstanr::cmdstan_model("Stan-R/dte_pp.stan")
+bayes.dte <- cmdstanr::cmdstan_model(file.path(stan_r_dir, "dte_pp.stan"))
 
 # Load R functions for baseline and experimental arm cumulative hazards
-source("Stan-R/rmst_funs.R")
+source(file.path(stan_r_dir, "rmst_funs.R"))
 
 #' Get stan data for BayesDTE
 #' 
